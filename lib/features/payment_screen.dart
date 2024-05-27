@@ -34,6 +34,7 @@ class PaymentState extends State<Payment> {
       isLightTheme ? SystemUiOverlayStyle.dark : SystemUiOverlayStyle.light,
     );
     return Scaffold(
+      appBar: AppBar(),
         resizeToAvoidBottomInset: false,
         body: Builder(
           builder: (BuildContext context) {

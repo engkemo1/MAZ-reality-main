@@ -49,7 +49,7 @@ abstract class ApiServices {
   );
 
   @GET(ApiConstants.myAds)
-  Future<HomePropertiesResponse> getMyAds(
+  Future<PropertiesModel> getMyAds(
     @Header("Authorization") String token,
   );
 

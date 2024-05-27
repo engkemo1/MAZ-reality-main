@@ -129,6 +129,7 @@ class _SearchScreenState extends State<FilterScreen> {
                               fontSize: 12, fontWeight: FontWeight.w700),
                         ),
                         padding: EdgeInsets.all(2),
+                        isExpanded: true,
                         underline: SizedBox(),
                         value: _selectedOption2,
                         onChanged: (newValue) {
@@ -137,6 +138,7 @@ class _SearchScreenState extends State<FilterScreen> {
                           });
                         },
                         items: _options2.map((String option) {
+
                           return DropdownMenuItem<String>(
                             value: option,
                             child: Text(option),

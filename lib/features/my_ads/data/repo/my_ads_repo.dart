@@ -4,6 +4,8 @@ import 'package:final_project/core/networking/api_result.dart';
 import 'package:final_project/core/networking/api_services.dart';
 import 'package:final_project/features/home_details/data/models/home_properties_response.dart';
 
+import '../../../search/data/model/filter_model.dart';
+
 class MyAdsRepo {
   final ApiServices _apiServices;
 
@@ -11,7 +13,7 @@ class MyAdsRepo {
     this._apiServices,
   );
 
-  Future<ApiResult<HomePropertiesResponse>> getMyAds() async {
+  Future<ApiResult<PropertiesModel>> getMyAds() async {
     try {
       String token = await SharedPres.getToken() ?? '';
 

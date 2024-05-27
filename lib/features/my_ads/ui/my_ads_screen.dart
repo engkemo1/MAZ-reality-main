@@ -4,6 +4,7 @@ import 'package:final_project/features/home_details/data/models/home_properties_
 import 'package:final_project/features/my_ads/logic/my_ads_cubit.dart';
 import 'package:final_project/features/my_ads/logic/my_ads_state.dart';
 import 'package:final_project/features/my_ads/ui/widgets/my_ad_widget.dart';
+import 'package:final_project/features/search/data/model/filter_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -46,7 +47,7 @@ class _Body extends StatelessWidget {
             initial: () => const SizedBox(),
             loading: () => const Center(child: CircularProgressIndicator()),
             success: (data) {
-              final list = (data as HomePropertiesResponse).data?.properties ?? [];
+              final list = (data as PropertiesModel).data?.data ?? [];
               return SingleChildScrollView(
                 child: GridView.builder(
                   physics: const NeverScrollableScrollPhysics(),

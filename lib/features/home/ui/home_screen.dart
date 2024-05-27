@@ -86,23 +86,26 @@ class HomeScreen extends StatelessWidget {
       onTap: () {
         controller.goToPage(page);
       },
-      child: Container(
-        color: Colors.transparent,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(icon,
-                color: controller.currentIndex == page
-                    ? ColorsManager.blue
-                    : ColorsManager.lightGray),
-            Text(
-              label,
-              style: TextStyles.font28lightGrayMedium.copyWith(
+      child: Expanded(
+        flex: 1,
+        child: Container(
+          color: Colors.transparent,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(icon,
                   color: controller.currentIndex == page
                       ? ColorsManager.blue
                       : ColorsManager.lightGray),
-            )
-          ],
+              Text(
+                label,
+                style: TextStyles.font28lightGrayMedium.copyWith(
+                    color: controller.currentIndex == page
+                        ? ColorsManager.blue
+                        : ColorsManager.lightGray),
+              )
+            ],
+          ),
         ),
       ),
     );

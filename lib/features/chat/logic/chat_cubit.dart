@@ -4,6 +4,7 @@ import 'package:final_project/features/chat/model/message_model.dart';
 
 import '../../../core/helpers/shared_pres.dart';
 import '../../../main.dart';
+import '../model/chat_model.dart';
 import 'chat_state.dart';
 
 class ChatCubit extends Cubit<List<ChatMessage>> {
@@ -59,6 +60,27 @@ print("${prefs!.getString('token')}");
       // Handle errors here
     }
     return messages;
+  }
+  Future fetchChats() async {
+
+    List<ChatsModel> myChats = [];
+    try {
+      String token = await SharedPres.getToken() ?? '';
+
+        // Make a GET request to fetch the chat data for both users
+        Response response = await Dio().get(
+          "https://mazrealty-live.onrender.com/api/v1/chats",
+          options: Options(headers: {"Authorization": "Bearer $token"}),
+        );
+      print(response.data);
+
+      myChats = (response.data as List).map((chat) => ChatsModel.fromJson(chat)).toList();
+      print("///////////");
+    } catch (error) {
+      print("Error fetching messages: $error");
+      // Handle errors here
+    }
+    return myChats;
   }
 
 }

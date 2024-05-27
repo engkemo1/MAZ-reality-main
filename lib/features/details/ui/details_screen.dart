@@ -16,6 +16,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:gap/gap.dart';
 
 import '../../../core/helpers/shared_pres.dart';
@@ -46,14 +47,8 @@ class _DetailsScreenState extends State<DetailsScreen> {
       userId= v.owner.sId;
 
         })).then((v)async{
-      print(userId)    ;
-      List<Message> m=[];
 
-      var  id= await SharedPres.getUserId() ;
 
-      ChatCubit().fetchMessages(userId!).then((value)=>setState(() {
-        messages=value;
-      }));
     });
 
     // TODO: implement initState
@@ -316,12 +311,16 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                       child: IconButton(
                                           onPressed: ()async {
                                             var  id=await SharedPres.getUserId();
-                                            Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (_) => ChatScreen(
-                                                          receiverId: userId!, messages: messages,userId:id ,
-                                                        )));
+
+                                            if(     userId!=null){
+
+                                              ChatCubit().fetchMessages(userId!).then((value)=>     Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (_) => ChatScreen(
+                                                        receiverId: userId!, messages: value,userId:id ,
+                                                      ))));
+                                     }
                                           },
                                           icon: const Icon(
                                             Icons.chat,
@@ -343,11 +342,19 @@ class _DetailsScreenState extends State<DetailsScreen> {
                       SizedBox(
                         height: 2.h,
                       ),
-                      Text(
-                        widget.property.description!,
-                        style: TextStyles.font29GrayRegular
-                            .copyWith(fontSize: 16.sp),
-                        maxLines: 3,
+                      HtmlWidget(
+                        // the first parameter (`html`) is required
+                        widget.property.description,
+
+                        // all other parameters are optional, a few notable params:
+
+                        // specify custom styling for an element
+                        // see supported inline styling below
+
+                        renderMode: RenderMode.column,
+
+                        // set the default styling for text
+                        textStyle: TextStyle(fontSize: 14,fontWeight: FontWeight.w500),
                       ),
 
                     ],

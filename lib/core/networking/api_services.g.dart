@@ -139,14 +139,14 @@ class _ApiServices implements ApiServices {
   }
 
   @override
-  Future<HomePropertiesResponse> getMyAds(String token) async {
+  Future<PropertiesModel> getMyAds(String token) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{r'Authorization': token};
     _headers.removeWhere((k, v) => v == null);
     const Map<String, dynamic>? _data = null;
     final _result = await _dio.fetch<Map<String, dynamic>>(
-        _setStreamType<HomePropertiesResponse>(Options(
+        _setStreamType<PropertiesModel>(Options(
       method: 'GET',
       headers: _headers,
       extra: _extra,
@@ -162,7 +162,7 @@ class _ApiServices implements ApiServices {
               _dio.options.baseUrl,
               baseUrl,
             ))));
-    final value = HomePropertiesResponse.fromJson(_result.data!);
+    final value = PropertiesModel.fromJson(_result.data!);
     return value;
   }
 

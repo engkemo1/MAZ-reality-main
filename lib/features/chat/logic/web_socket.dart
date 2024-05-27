@@ -9,7 +9,7 @@ final class WebSocketManager {
   String _fetchBaseUrl() {
     switch (kDebugMode) {
       case true:
-        return "https://mazrealty-live.onrender.com";
+        return "https://mazrealty-live.onrender.com/";
       default:
       //Product host url
         return "";

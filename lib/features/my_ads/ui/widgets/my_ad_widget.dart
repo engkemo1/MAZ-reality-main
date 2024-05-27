@@ -5,10 +5,12 @@ import 'package:final_project/features/home_details/data/models/home_properties_
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../search/data/model/filter_model.dart';
+
 class MyAdWidget extends StatelessWidget {
   const MyAdWidget({super.key, required this.property});
 
-  final Property property;
+  final FilterData property;
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +25,7 @@ class MyAdWidget extends StatelessWidget {
             ClipRRect(
               borderRadius: BorderRadius.circular(14.r),
               child: CachedNetworkImage(
-                imageUrl: property.images!.first.startsWith("http")
+                imageUrl: property!.images!.first.startsWith("http")
                     ? property.images!.first
                     : "https://mazrealty.onrender.com/img/properties/${property.images!.first}",
                 width: 1.sw,

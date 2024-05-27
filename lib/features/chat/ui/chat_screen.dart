@@ -3,6 +3,7 @@ import 'package:final_project/features/chat/model/message_model.dart';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
+import 'package:socket_io_client/socket_io_client.dart';
 
 import '../../../core/helpers/shared_pres.dart';
 import '../logic/web_socket.dart';
@@ -12,7 +13,8 @@ class ChatScreen extends StatefulWidget {
   final String receiverId;
   List<Message> messages = [];
 
-  ChatScreen({super.key,
+  ChatScreen({
+    super.key,
     this.userId,
     required this.messages,
     required this.receiverId,
@@ -24,79 +26,76 @@ class ChatScreen extends StatefulWidget {
 
 class _ChatScreenState extends State<ChatScreen> {
   final TextEditingController _controller = TextEditingController();
-
-
-  listenMessageEvent(VoidCallback setState) {
-    WebSocketManager.instance.webSocketReceiver("", (data) {
-      widget.messages.add(Message.fromJson(data));
-      setState();
-    });
-  }
-
+  IO.Socket? socket;
   @override
   void initState() {
-    WebSocketManager.instance.initializeSocketConnection();
-
-    //Listen chat channel
-    listenMessageEvent(() {
-      setState(() {});
+    socket = IO.io('https://mazrealty-live.onrender.com/',
+        OptionBuilder().setTransports(['websocket']).build());
+    socket!.on('getMessage', (data) {
+      if (data["chatId"] == widget.messages.first.chatId) {
+        widget.messages.add(Message(
+          text: data["text"],
+          chatId: data["chatId"],
+          userId: data["userId"],
+        ));
+        setState(() {});
+      }
+      // Handle received message
+      print('Received message: $data');
     });
+    socket!.onConnect((_) {
+      print('connected');
+    });
+    socket!.emit("newUser", widget.userId);
+    // Listen for messages from the server
     super.initState();
-    // Initialize SocketIO
-    // Connect to server
-    // Fetch messages when the screen is initialized
-    ChatCubit().fetchMessages(widget.receiverId).then((onValue){
-      setState(() {
-        widget.messages=onValue;
-      });
-    });
-  }
 
-  @override
-  void dispose() {
-    // Disconnect socket when the screen is disposed
-    super.dispose();
   }
 
   void _sendMessage(String message) async {
+
     if (message.isNotEmpty) {
-      // Retrieve the token from prefs
+      setState(() {
+        widget.messages.add(Message(
+          text: message,
+          userId: widget.userId,
+        ));
+      });
+      _controller.clear();
+
       String token = await SharedPres.getToken() ?? '';
       if (token.isNotEmpty) {
-        // Send message to the server with the correct authorization headers
-        await Dio().post(
+        await Dio()
+            .post(
           "https://mazrealty-live.onrender.com/api/v1/messages/",
           data: {
             "text": message,
-            "to": "662aa962cf52dc2cdceec751",
+            "to": widget.receiverId,
           },
           options: Options(
             headers: {"Authorization": "Bearer $token"},
           ),
-        ).then((response) {
-          setState(() {
-            widget.messages.add(Message(
-              text: message,
-              userId: widget.userId,
-            ));
-          });
-          print("Message sent: $message");
-          print("Response: ${response.data}");
-          // Optionally, you can process the response here
-        }).catchError((error) {
+        )
+            .then((response) {
+
+          socket!.emit('sendMessage',
+              {"receiverId": widget.receiverId, "data": response.data});
+            }).catchError((error) {
           print("Error sending message: $error");
           // Handle errors here
         });
 
-        // Add sent message to the local message list
-
-
-        // Clear the message input field
-        _controller.clear();
       } else {
         print("Authentication token is empty or null");
       }
     }
+  }
+
+  @override
+  void dispose() {
+    // Disconnect from the Socket.IO server
+    socket!.dispose();
+    super.dispose();
   }
 
   @override
@@ -109,13 +108,15 @@ class _ChatScreenState extends State<ChatScreen> {
         children: [
           Expanded(
             child: ListView.builder(
-              itemCount:   widget.messages.length,
+              itemCount: widget.messages.length,
               itemBuilder: (context, index) {
                 bool isMe = widget.messages[index].userId == widget.userId;
                 return Align(
-                    alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
+                    alignment:
+                        isMe ? Alignment.centerRight : Alignment.centerLeft,
                     child: Container(
-                      padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                      padding:
+                          EdgeInsets.symmetric(vertical: 10, horizontal: 15),
                       margin: EdgeInsets.symmetric(vertical: 5, horizontal: 8),
                       decoration: BoxDecoration(
                         color: isMe ? Colors.blue : Colors.grey[300],
@@ -123,7 +124,8 @@ class _ChatScreenState extends State<ChatScreen> {
                       ),
                       child: Text(
                         widget.messages[index].text!,
-                        style: TextStyle(color: isMe ? Colors.white : Colors.black),
+                        style: TextStyle(
+                            color: isMe ? Colors.white : Colors.black),
                       ),
                     ));
               },

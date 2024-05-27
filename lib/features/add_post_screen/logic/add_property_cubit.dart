@@ -28,10 +28,11 @@ class AddPropertyCubit extends Cubit<AddPropertyState> {
   void addProperty({required File contract, required List<File> images}) async {
     emit(const AddPropertyState.loading());
     String token = await SharedPres.getToken() ?? '';
+    print(token);
     final response = await _propertyRepo.addPropertyRepo(
       token,
       PropertyBodyModel(
-        city: cityId.isNotEmpty ?  cityId : "6603cdb48cc36a22dc4eb012",
+        city:"663520f9134893285cb91f10",
         approved: 'false',
         address: address.text,
         bathrooms: bathrooms.text,

@@ -1,6 +1,8 @@
 import 'package:final_project/core/helpers/extensions.dart';
 import 'package:final_project/core/routing/routes.dart';
 import 'package:final_project/core/theming/styles.dart';
+import 'package:final_project/features/chat/logic/chat_cubit.dart';
+import 'package:final_project/features/chat/ui/list_user_chat.dart';
 
 import 'package:flutter/material.dart';
 
@@ -32,7 +34,23 @@ class _SearchAndNotificationState extends State<SearchAndNotification> {
             height: 50.h,
             fit: BoxFit.fill,
           ),
-          IconButton(onPressed: () {}, icon: const Icon(Icons.notifications))
+          Row(
+            children: [
+              IconButton(onPressed: () {
+                ChatCubit().fetchChats().then((v){
+
+                  Navigator.push(context, MaterialPageRoute(builder: (_)=>ListUserChat(myChats: v,)));
+
+                });
+
+
+              }, icon: const Icon(Icons.chat_outlined)),
+
+              IconButton(onPressed: () {
+              }, icon: const Icon(Icons.notifications)),
+            ],
+          )
+
         ]),
         Padding(
           padding: EdgeInsets.only(top: 2.0.h),

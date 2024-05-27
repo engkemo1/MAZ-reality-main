@@ -1,7 +1,7 @@
 //video 9
 
 class ApiConstants {
-  static const String apiBaseUrl = "https://mazrealty.onrender.com/api/v1/";
+  static const String apiBaseUrl = "https://mazrealty-live.onrender.com/api/v1/";
   static const String login = "auth/login";
   static const String signup = "auth/signup";
   static const String userInfo = "users/me";
